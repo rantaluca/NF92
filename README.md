@@ -1,6 +1,6 @@
 # NF92
 
-## Projet:  Creation d'une plateforme de gestion d'auto école pour le cours NF92 à l'Univérsité de Technologie de Compiègne.
+## Projet:  Creation d'une plateforme de gestion d'auto école pour le cours NF92 à l'Université de Technologie de Compiègne.
 
 <img width="1624" alt="Capture d’écran 2022-06-04 à 12 36 55" src="https://user-images.githubusercontent.com/102813576/171995588-7b287425-2a8b-4877-928c-1e882409f688.png">
 
