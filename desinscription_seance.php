@@ -6,11 +6,11 @@
 </head>
 <body>
 	<div class="title-header">
-		<h3>‍📝 Inscrire un éléve</h3>
+		<h3>‍❌ Desinscription d'un éléve</h3>
 	</div>
 	<div class="container">
-  <form action="inscrire_eleve.php" method="POST" >
-		<h2>‍📝 Inscrire un éléve</h2>
+  <form action="desinscrire_seance.php" method="POST" >
+		<h2>‍❌ Desinscription d'un éléve</h2>
 		<table>
 			<tr>
 			<td> <p>Choisir un éléve:</p> </td>
@@ -24,46 +24,49 @@
   date_default_timezone_set('Europe/Paris');
   $date = date("Y-m-d");
 
-  $query_eleves = "SELECT * FROM `eleves`"; // on recup les éléves
+  $query_eleves = "SELECT * FROM `eleves`"; // recupere tout les éléves
   $result_eleves = mysqli_query($connect, $query_eleves);
   // test/alerte erreur obligatoire
   if (!$result_eleves)
       {
        echo "<br>🚨 Attention, Erreur 🚨".mysqli_error($connect);
        echo "<br>Votre requête SQL: $query_eleves";
+			 echo "<p onclick='history.back()' class='smallbtn'> ← Retour</p></div>";
        exit();
       }
-	// requete qui nous permet de recuperer la liste des seances jointe aux noms des thèmes, qui n'ont pas encore eux lieux, et dont l'effectif max n'est pas dépassé
-  $query_seances = "SELECT * FROM `seances` INNER JOIN`themes` WHERE themes.idtheme = seances.idtheme and seances.DateSeance>='$date' and (SELECT COUNT(*) FROM inscription WHERE inscription.idseance = seances.idseance) < seances.EffMax";
+
+  $query_seances = "SELECT * FROM seances INNER JOIN themes ON themes.idtheme = seances.idtheme where seances.DateSeance>='$date'"; //recupere les séances qui n'ont pas encore eu lieux
   $result_seances = mysqli_query($connect, $query_seances);
-  // verif/test/alerte erreur obligatoire
+    // test/alerte erreur obligatoire
   if (!$result_seances)
       {
        echo "<br>🚨 Attention, Erreur 🚨".mysqli_error($connect);
        echo "<br>Votre requête SQL: $query_seances";
+			 echo "<p onclick='history.back()' class='smallbtn'> ← Retour</p></div>";
        exit();
       }
 
-	//select eleve
-	echo "<td> <select name='ideleve' size='5' style='height:10em; width:15em; font-size:120%;' required>";
+	// select eleve
+	echo "<td> <select name='ideleve' size='7' style='height:10em; width:15em; font-size:120%;' required>";
+
   while ($row = mysqli_fetch_array($result_eleves))
   {
-  echo "<option value=".$row['ideleve'].">".$row['nom']." ".$row['prenom']."</option>"; //while pour options avec l'ideleve
+  echo "<option value=".$row['ideleve'].">".$row['nom']." ".$row['prenom']."</option>"; // boucle pour option eleve
   }
   echo "</select></td>";
 
-	//select seance
-  echo "<td><select name='idseance' size='5' style='height:10em; width:15em; font-size:120%;' required>";
+	// select seances
+  echo "<td><select name='idseance' size='7' style='height:10em; width:15em; font-size:120%;' required>";
   while ($row2 = mysqli_fetch_array($result_seances))
   {
-  echo "<option value=".$row2['idseance'].">".$row2['nom']." ".$row2['DateSeance']."</option>";//while pour options avec l'ideleve
+  echo "<option value=".$row2['idseance'].">".$row2['nom']." ".$row2['DateSeance']."</option>";// boucle pour option seances
   }
   echo "</select></td></tr>";
 
 
   mysqli_close($connect);
   ?>
-	<td>	<input type="submit" value="Inscrire"> </td><td><input type="reset" value="Reset"></td>
+	<td>	<input type="submit" value="Desinscrire"> </td><td><input type="reset" value="Reset"></td>
 		</tr>
 		</table>
 	</form>

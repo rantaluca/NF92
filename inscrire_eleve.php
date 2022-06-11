@@ -4,6 +4,7 @@
   <link href="style.css" rel="stylesheet">
 </head>
 <body>
+<div class="simple-div">
 <?php
 
   //connexion
@@ -23,24 +24,39 @@
   $idseance = htmlspecialchars ($idseance);
   $ideleve = htmlspecialchars ($ideleve);
 
-  //requete
+  //Securite: secu aussi pour prevenir les faille sql
+  $ideleve = mysqli_real_escape_string($connect, $ideleve);
+  $idseance = mysqli_real_escape_string($connect, $idseance);
+
+  //test server-side, au cas ou le "required" en html n'aboutit pas
+  if (empty($ideleve) or empty($idseance)) { // test si une val est vide
+    echo "<h2>🚨 Attention 🚨</h2>Il manque un champ.";
+    echo "<p onclick='history.back()' class='smallbtn'> ← Retour</p></div>";
+    exit();
+  }
+
+  //requete pour inscrire l'eleve
   $query = "insert into inscription values ('$idseance','$ideleve',-1)";
   $result = mysqli_query($connect, $query);
 
-  // alerte erreur
+  // verif/alerte erreur obligatoire
   if (!$result)
   {
    echo "<br>🚨 Attention, Erreur 🚨".mysqli_error($connect);
    echo "<br>Votre requête SQL: $query";
+  echo "<p onclick='history.back()' class='smallbtn'> ← Retour</p></div>";
    exit();
   }
 
   //succes
-  echo " <div class='simple-div'><h2>👍 Félicitations !</h2>Vous venez d'ajouter un éléve à cette séance.<br><br>Votre requête SQL: $query<br></div><p onclick='history.back()' class='smallbtn'> ← Retour</p>";
-  echo "";
+  echo " <h2>👍 Félicitations !</h2>Vous venez d'ajouter un éléve à cette séance.<br><br>Votre requête SQL: $query<br>";
+
 
 mysqli_close($connect);
 
 ?>
+
+ <p onclick='history.back()' class='smallbtn'> ← Retour</p>
+ </div>
 </body>
 </html>

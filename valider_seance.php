@@ -25,50 +25,66 @@
 
   $idseance=$_POST['idseance'];
 
-  $query_eleves_in_seances = "SELECT * FROM `inscription` INNER JOIN `eleves` WHERE inscription.idseance=$idseance and inscription.ideleve = eleves.ideleve";
+	//Securite: remplace les quotes, pour eviter injections sql (si user ne passe par par notre interface)
+	$idseance = str_replace ("'","\'",$idseance);
+
+//Securite: secu aussi pour prevenir les faille sql
+	$idseance = mysqli_real_escape_string($connect, $idseance);
+
+	//Securite: pour les injection html
+	$idseance = htmlspecialchars ($idseance);
+
+	if (empty($idseance)) {// test vide server side
+     echo "<br>🚨 Attention, Erreur 🚨, vous n'avez pas séléctionné de seance.";
+     echo "<br>Votre requête SQL: $query_eleves_in_seances";
+		  echo "<p onclick='history.back()' class='smallbtn'> ← Retour</p></div>";
+     exit();
+  }
+
+	//requete pour recup inscription jointe aux eleves, correspondants à la seance choisie
+  $query_eleves_in_seances = "SELECT * FROM `inscription` INNER JOIN `eleves` on inscription.ideleve = eleves.ideleve where inscription.idseance='$idseance'";
   $result_eleves_in_seances = mysqli_query($connect, $query_eleves_in_seances);
-  // alerte erreur
+  // verif/alerte erreur obligatoire
   if (!$result_eleves_in_seances)
       {
        echo "<br>🚨 Attention, Erreur 🚨".mysqli_error($connect);
        echo "<br>Votre requête SQL: $query_eleves_in_seances";
+			 echo "	<p onclick='history.back()' class='smallbtn'> ← Retour</p>";
        exit();
       }
 
-  if (empty($idseance)) {
-     echo "<br>🚨 Attention, Erreur 🚨, vous n'avez pas séléctionné de seance.";
-     echo "<br>Votre requête SQL: $query_eleves_in_seances";
-     exit();
-  }
-
-  if (mysqli_num_rows($result_eleves_in_seances) == 0) {
+  if (mysqli_num_rows($result_eleves_in_seances) == 0) { // si aucun resultat, pas d'eleve inscrits/ou seance existe pas
       echo "<br>🚨 Attention, Erreur 🚨, il n'y a pas d'éléves inscrits dans cette séance.";
       echo "<br>Votre requête SQL: $query_eleves_in_seances";
+			echo "	<p onclick='history.back()' class='smallbtn'> ← Retour</p>";
       exit();
   }
 
-  while ($row_eleves = mysqli_fetch_array($result_eleves_in_seances)){
+  while ($row_eleves = mysqli_fetch_array($result_eleves_in_seances)){ // on parcours la liste d'eleve inscrits
 
-    echo "<tr><td><label>".$row_eleves['nom']." ".$row_eleves['prenom']."</label></td>";
-		echo "<input type ='hidden' name='seance' value='".$idseance."'>";
-		if ($row_eleves['note'] >= 0 ){
-			$nbfautes = 40 - $row_eleves['note'];
+    echo "<tr><td><label>".$row_eleves['nom']." ".$row_eleves['prenom']."</label></td>";//affichage nom / prenom
+		echo "<input type ='hidden' name='seance' value='".$idseance."'>"; // transmet id seance
+		if ($row_eleves['note'] >= 0 ){ // si eleve noté
+			$nbfautes = 40 - $row_eleves['note']; //on recup son ancienne note et on calc l' ancien nb de fautes
+			//on affiche le precédent enregistrement + input pour changer la note
 			echo "<td>Note enregistrée précedement: ".$row_eleves['note']." <input type='number' min='0' max='40' name='".$row_eleves['ideleve']."' placeholder='Nombres de fautes: ".$nbfautes."' ></input></td>	</tr>";
 		}
-		else {
+		else { // pas encore de note dc input pour l'ajouter
 			echo "<td><input type='number' min='0' max='40' name='".$row_eleves['ideleve']."' placeholder='Pas de note enregistrée' ></input></td>	</tr>";
 		}
 
 
   }
-
   mysqli_close($connect);
 ?>
 
 	<td>	<input type="submit" value="Envoyer"></td><td><input type="reset" value="Reset"></td>
 		</tr>
 		</table>
+		<br>
+		<p onclick='history.back()' class='smallbtn'> ← Retour</p>
 	</form>
+
 </div>
 </body>
 </html>

@@ -27,32 +27,36 @@
   //test server-side si tt les champs sont complete, au cas ou le "required" en html n'aboutit pas
   if (empty($nom) or empty($prenom) or empty($dateNaiss)) {
     echo "<div class='simple-div'><h2>🚨 Attention 🚨</h2>Il manque un champ.</div>";
+    echo "<p onclick='history.back()' class='smallbtn'> ← Retour</p></div>";
     exit();
   }
 
   //Securite: verif on ne depasse pas 30 char
   if (strlen($nom)>30 or strlen($prenom)>30) {
     echo "<div class='simple-div'><h2>🚨 Attention 🚨</h2>Les champs 'Nom' et 'Prenom' doivent etre inférieurs à 30 characteres.</div>";
+    echo "<p onclick='history.back()' class='smallbtn'> ← Retour</p></div>";
     exit();
   }
 
   //verif age
   if ($dateNaiss>$date) {
     echo "<div class='simple-div'><h2>🚨 Attention 🚨</h2>L'élève n'est pas née.</div>";
+    echo "<p onclick='history.back()' class='smallbtn'> ← Retour</p></div>";
     exit();
   }
 
 
-  $query_doublon = "select * from eleves where nom = '$nom' and prenom = '$prenom'";
+  $query_doublon = "select * from eleves where nom = '$nom' and prenom = '$prenom'";// requete pour recup les doublon
   $result_doublon = mysqli_query($connect, $query_doublon);
-
+  // test obligatoir à chaque requete
   if (!$result_doublon)
   {
    echo "<br>🚨 Attention, Erreur 🚨".mysqli_error($connect);
+   echo "<p onclick='history.back()' class='smallbtn'> ← Retour</p></div>";
    exit();
   }
 
-  if (!empty(mysqli_fetch_array($result_doublon))){
+  if (!empty(mysqli_fetch_array($result_doublon))){ // si le result_doublon, n'est pas vide on affiche le form doublons
 
     echo <<< EOT
     <div class="title-header">
@@ -77,16 +81,17 @@
         </tr>
 
        <tr>
-    <td>	<input type="submit" value="Oui"> </td><td><p onclick='history.back()' class='smallbtn'> Non </p></td>
+    <td>	<input type="submit" value="Oui"> </td><td><p onclick='history.back()' class='smallbtn'> NON</p></td>
       </tr>
       </table>
+
       </form>
   </div>
   EOT;
 
   }
 
-else {
+else { // sinon on affiche le form non-doublon
   echo <<< EOT
   <div class="title-header">
     <h3>‍✅ Confirmation</h3>
@@ -110,9 +115,10 @@ else {
       </tr>
 
      <tr>
-  <td>	<input type="submit" value="Oui"> </td>
+  <td>	<input type="submit" value="Oui"> </td><td><p onclick='history.back()' class='smallbtn'> NON</p></td>
     </tr>
     </table>
+
     </form>
 </div>
 EOT;
@@ -121,5 +127,6 @@ EOT;
 
 mysqli_close($connect);
 ?>
+<p onclick='history.back()' class='smallbtn'> ← Retour</p>
 </body>
 </html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="fr">
+<head>
+	<meta charset="utf-8">
+	<title>Ajouter un éléve</title>
+	<link href="style.css" rel="stylesheet">
+
+</head>
+<body>
+<div class="title-header">
+	<h3>👨‍🎓 Ajouter un élève</h3>
+</div>
+<div class="container">
+		<form action="valider_eleve.php" method='POST'>
+			<h2>👨‍🎓 Ajouter un élève</h2>
+			<table>
+				<tr>
+					<td> Nom:</td>
+					<td><input name="nom" type="text" required></td>
+				</tr>
+				<tr>
+					<td style="text-align:left"> Prénom:</td>
+					<td><input name="prenom" type="text" required></td>
+				</tr>
+	      <tr>
+	        <td style="text-align:left"> Date de naissance:</td>
+	        <td><input name="dateNaiss" type="date" value="01/01/2004" required></td>
+	      </tr>
+
+			 <tr>
+		<td>	<input type="submit" value="Ajouter"> </td><td><input type="reset" value="Reset"></td>
+			</tr>
+			</table>
+		</form>
+</div>
+
+</body>
+</html>

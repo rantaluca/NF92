@@ -9,7 +9,7 @@
 		<h3>‍📔 Calendrier éléve</h3>
 	</div>
 	<div class="container">
-  <form action="inscrire_eleve.php" method="POST" >
+  <form action="visualiser_calendrier_eleve.php" method="POST" >
 		<h2>📔 Calendrier éléve</h2>
 		<table>
 			<tr>
@@ -23,9 +23,10 @@
   date_default_timezone_set('Europe/Paris');
   $date = date("Y-m-d");
 
-  $query_eleves = "SELECT * FROM `eleves`";
+  $query_eleves = "SELECT * FROM `eleves`"; // on recup tt les eleves
   $result_eleves = mysqli_query($connect, $query_eleves);
-  // alerte erreur
+
+  // verif/alerte erreur obligatoire
   if (!$result_eleves)
       {
        echo "<br>🚨 Attention, Erreur 🚨".mysqli_error($connect);
@@ -33,11 +34,11 @@
        exit();
       }
 
-	echo "<td> <select name='ideleve' size='5' style='height:6em; width:15em; font-size:120%;' required>";
+	echo "<td> <select name='ideleve' size='5' style='height:10em; width:15em; font-size:120%;' required>"; //select
 
   while ($row = mysqli_fetch_array($result_eleves, MYSQLI_NUM))
   {
-  echo "<option value=".$row['0'].">".$row['1']." ".$row['2']."</option>";
+  echo "<option value=".$row['0'].">".$row['1']." ".$row['2']."</option>"; // option ideleve avec nom prenom
   }
   echo "</select></td>";
   echo "</tr>";
@@ -45,7 +46,7 @@
 
   mysqli_close($connect);
   ?>
-	<td>	<input type="submit" value="Envoyer"> </td><td><input type="reset" value="Reset"></td>
+	<td>	<input type="submit" value="Consulter"> </td><td><input type="reset" value="Reset"></td>
 		</tr>
 		</table>
 	</form>
